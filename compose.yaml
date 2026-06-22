@@ -1,0 +1,7 @@
+﻿services:
+  bach-bash:
+    image: bach-bash
+    build:
+      context: .
+      dockerfile: Dockerfile
+
