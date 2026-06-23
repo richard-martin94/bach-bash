@@ -1,7 +1,9 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using bach_bash.Models;namespace bach_bash.Persistence.Configurations;
+using bach_bash.Models;
+
+namespace bach_bash.Persistence.Configurations;
 
 public class ChallengeConfiguration : IEntityTypeConfiguration<Challenge>
 {
@@ -13,6 +15,12 @@ public class ChallengeConfiguration : IEntityTypeConfiguration<Challenge>
         
             //primary key
             builder.HasKey(c => c.Id);
+
+            //foreign key
+            builder.HasOne(b => b.Bash)
+                .WithMany(c => c.Challenges)
+                .HasForeignKey(c => c.BashId)
+                .IsRequired();
         
             //properties
             builder.Property(c => c.Title)
@@ -22,8 +30,6 @@ public class ChallengeConfiguration : IEntityTypeConfiguration<Challenge>
                 .IsRequired()
                 .HasMaxLength(500);
             builder.Property(c => c.Points)
-                .IsRequired();
-            builder.Property(c => c.BashId)
                 .IsRequired();
         
             //immutable properties

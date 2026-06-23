@@ -12,7 +12,7 @@ using bach_bash.Persistence;
 namespace bach_bash.Migrations
 {
     [DbContext(typeof(BashDbContext))]
-    [Migration("20260623191602_InitialCreate")]
+    [Migration("20260623200556_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -61,8 +61,8 @@ namespace bach_bash.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("BashId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("BashId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("Created")
                         .ValueGeneratedOnAdd()
@@ -90,6 +90,22 @@ namespace bach_bash.Migrations
                     b.HasIndex("BashId");
 
                     b.ToTable("Challenges", "app");
+                });
+
+            modelBuilder.Entity("bach_bash.Models.Challenge", b =>
+                {
+                    b.HasOne("bach_bash.Models.Bash", "Bash")
+                        .WithMany("Challenges")
+                        .HasForeignKey("BashId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bash");
+                });
+
+            modelBuilder.Entity("bach_bash.Models.Bash", b =>
+                {
+                    b.Navigation("Challenges");
                 });
 #pragma warning restore 612, 618
         }

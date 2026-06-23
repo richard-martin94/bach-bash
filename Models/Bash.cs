@@ -4,11 +4,14 @@ public sealed class Bash : EntityBase
 {
     public String Title { get; private set; }
     public int OwnerId { get; private set; }
+    
+    public ICollection<Challenge> Challenges { get; private set; }
 
     private Bash()
     {
         Title = "Bash Example Title";
         OwnerId = 0;
+        Challenges = new List<Challenge>();
     }
 
     private Bash(String title, int ownerId)

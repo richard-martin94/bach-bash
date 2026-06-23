@@ -39,13 +39,20 @@ namespace bach_bash.Migrations
                     Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     Points = table.Column<int>(type: "integer", nullable: false),
-                    BashId = table.Column<int>(type: "integer", nullable: false),
+                    BashId = table.Column<Guid>(type: "uuid", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     LastModified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Challenges", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Challenges_Bashes_BashId",
+                        column: x => x.BashId,
+                        principalSchema: "app",
+                        principalTable: "Bashes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -65,11 +72,11 @@ namespace bach_bash.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Bashes",
+                name: "Challenges",
                 schema: "app");
 
             migrationBuilder.DropTable(
-                name: "Challenges",
+                name: "Bashes",
                 schema: "app");
         }
     }

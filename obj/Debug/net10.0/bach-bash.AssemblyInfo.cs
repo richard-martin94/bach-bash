@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("bach-bash")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+97bdb786d748efa5909741bfbfeb437c5afaf95e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8e1bac86dbb95dc46c2ed96479dc076ff3212761")]
 [assembly: System.Reflection.AssemblyProductAttribute("bach-bash")]
 [assembly: System.Reflection.AssemblyTitleAttribute("bach-bash")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
