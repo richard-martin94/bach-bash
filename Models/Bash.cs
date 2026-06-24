@@ -5,12 +5,14 @@ public sealed class Bash : EntityBase
     public String Title { get; private set; }
     public Guid OwnerId { get; private set; }
     
+    public Basher Owner { get; private set; }
+    
     public ICollection<Challenge> Challenges { get; private set; }
 
     private Bash()
     {
         Title = "Bash Example Title";
-        OwnerId = Guid.NewGuid();
+        OwnerId = Owner.Id;
         Challenges = new List<Challenge>();
     }
 
