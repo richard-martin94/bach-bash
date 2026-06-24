@@ -19,10 +19,4 @@
         <PackageReference Include="Scalar.AspNetCore" Version="2.16.5" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="DTOs\BasherDtos\" />
-      <Folder Include="DTOs\ChallengeDtos\" />
-      <Folder Include="DTOs\SubmissionDtos\" />
-    </ItemGroup>
-
 </Project>
