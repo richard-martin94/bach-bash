@@ -9,12 +9,16 @@ public sealed class Challenge : EntityBase
 
     public Bash Bash { get; private set; } = null!;
 
+    public ICollection<Submission> Submissions { get; private set; }
+    
+
     private Challenge()
     {
         Title = "Example challenge title";
         Description = "Example challenge description";
         Points = 10;
         BashId = Bash.Id;
+        Submissions = new List<Submission>();
     }
 
     private Challenge(String title, String description, int points, Guid bashId)

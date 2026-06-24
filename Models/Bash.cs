@@ -3,31 +3,31 @@ namespace bach_bash.Models;
 public sealed class Bash : EntityBase
 {
     public String Title { get; private set; }
-    public int OwnerId { get; private set; }
+    public Guid OwnerId { get; private set; }
     
     public ICollection<Challenge> Challenges { get; private set; }
 
     private Bash()
     {
         Title = "Bash Example Title";
-        OwnerId = 0;
+        OwnerId = Guid.NewGuid();
         Challenges = new List<Challenge>();
     }
 
-    private Bash(String title, int ownerId)
+    private Bash(String title, Guid ownerId)
     {
         Title = title;
         OwnerId = ownerId;
     }
 
-    public static Bash CreateBash(String title, int ownerId)
+    public static Bash CreateBash(String title, Guid ownerId)
     {
         ValidateInputs(title, ownerId);
         
         return new Bash(title, ownerId);
     }
 
-    public void UpdateBash(String title, int ownerId)
+    public void UpdateBash(String title, Guid ownerId)
     {
         ValidateInputs(title, ownerId);
 
@@ -37,13 +37,13 @@ public sealed class Bash : EntityBase
 
     }
     
-    private static void ValidateInputs(String title, int ownerId)
+    private static void ValidateInputs(String title, Guid ownerId)
     {
         //check if owner owns this bash by id?
         
         if(string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Title can't be empty",nameof(title));
-        if(int.IsPositive(ownerId))
+        if(Guid.Empty == ownerId)
             throw new ArgumentException("Owner Id not recognized",nameof(ownerId));
         
     }
