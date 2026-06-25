@@ -7,5 +7,7 @@ public interface IChallengeService
     Task<ChallengeDto?> GetChallengeByIdAsync(Guid id);
     Task<IEnumerable<ChallengeDto>> GetAllChallengesByBashAsync(Guid bashId);
     Task UpdateChallengeAsync(Guid id, UpdateChallengeDto dto);
+    Task UpdateAllChallengesByBashAsync(Guid bashId, IEnumerable<UpdateChallengeDto> dto);
     Task DeleteChallengeAsync(Guid id);
+    Task DeleteAllChallengesByBashAsync(Guid bashId);
 }

@@ -6,7 +6,6 @@ public sealed class Challenge : EntityBase
     public String Description { get; private set; }
     public int Points { get; private set; }
     public Guid BashId { get; private set; }
-
     public Bash Bash { get; private set; } = null!;
 
     public ICollection<Submission> Submissions { get; private set; }
@@ -36,9 +35,9 @@ public sealed class Challenge : EntityBase
         return new Challenge(title, description, points, bashId);
     }
 
-    public void UpdateChallenge(String title, String description, int points, Guid bashId)
+    public void UpdateChallenge(Guid id, String title, String description, int points)
     {
-        ValidateInputs(title, description, points, bashId);
+        ValidateInputs(Id, title, description, points);
 
         Title = title;
         Description = description;
@@ -46,7 +45,18 @@ public sealed class Challenge : EntityBase
         
         UpdateLastModified();
     }
-    
+
+    private static void ValidateInputs(Guid id, string title, string description, int points)
+    {
+        if(string.IsNullOrWhiteSpace(title))
+            throw new ArgumentException("Title can't be empty",nameof(title));
+        if(string.IsNullOrWhiteSpace(description))
+            throw new ArgumentException("Description can't be empty",nameof(description));
+        if(points < 1)
+            throw new ArgumentException("Points can't be negative or zero",nameof(points));
+        if(Guid.Empty == id)
+            throw new ArgumentException("bash Id not found",nameof(id));
+    }
     private static void ValidateInputs(String title, string description, int points, Guid bashId)
     {
         //check if challenge belongs to this bash by id?
@@ -58,7 +68,7 @@ public sealed class Challenge : EntityBase
         if(points < 1)
             throw new ArgumentException("Points can't be negative or zero",nameof(points));
         if(Guid.Empty == bashId)
-            throw new ArgumentException("Owner Id not found",nameof(bashId));
+            throw new ArgumentException("bash Id not found",nameof(bashId));
         
     }
 }

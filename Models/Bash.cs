@@ -8,12 +8,13 @@ public sealed class Bash : EntityBase
     public Basher Owner { get; private set; }
     
     public ICollection<Challenge> Challenges { get; private set; }
+    
+    public ICollection<BashMember> BashMmebers { get; private set; }
 
     private Bash()
     {
-        Title = "Bash Example Title";
-        OwnerId = Owner.Id;
-        Challenges = new List<Challenge>();
+        Title = string.Empty;
+        OwnerId = Guid.Empty;
     }
 
     private Bash(String title, Guid ownerId)

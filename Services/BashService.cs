@@ -1,6 +1,7 @@
 using bach_bash.DTOs.BashDtos;
 using bach_bash.Models;
 using bach_bash.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace bach_bash.Services;
 
@@ -22,40 +23,74 @@ public class BashService : IBashService
         await _dbContext.Bashes.AddAsync(bash);
         await _dbContext.SaveChangesAsync();
 
-        List<Challenge> challenges = new List<Challenge>();
-
         return new BashDto
         (
             bash.Id,
             bash.Title,
-            bash.OwnerId,
-            challenges
+            bash.OwnerId
         );
 
     }
 
     public async Task<BashDto?> GetBashByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var bash = await _dbContext.Bashes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(b => b.Id == id);
+
+        if (bash is null)
+            return null;
+
+        return new BashDto
+        (
+            bash.Id,
+            bash.Title,
+            bash.OwnerId
+        );
     }
 
     public async Task<IEnumerable<BashDto>> GetAllBashesAsync()
     {
-        throw new NotImplementedException();
+        return await _dbContext.Bashes
+            .AsNoTracking()
+            .Select(bash => new BashDto(
+                bash.Id,
+                bash.Title,
+                bash.OwnerId
+                ))
+            .ToListAsync();
     }
 
-    public Task<IEnumerable<BashDto>> GetAllBashesByOwnerAsync(Guid ownerId)
+    public async Task<IEnumerable<BashDto>> GetAllBashesByOwnerAsync(Guid ownerId)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Bashes
+            .AsNoTracking()
+            .Select(bash => new BashDto(
+                bash.Id,
+                bash.Title,
+                bash.OwnerId
+            )).Where(bash => bash.OwnerId == ownerId)
+            .ToListAsync();
     }
 
+    public async Task UpdateBashAsync(Guid id, UpdateBashDto command)
+    {
+        var bashToUpdate = await _dbContext.Bashes.FindAsync(id);
+        
+        if (bashToUpdate is null || command is null)
+            throw new ArgumentNullException($"Invalid BashId or DTO command");
+        
+        bashToUpdate.UpdateBash(command.Title, command.OwnerId);
+        await _dbContext.SaveChangesAsync();
+    }
     public async Task DeleteBashAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var bashToDelete = await _dbContext.Bashes.FindAsync(id);
+        if (bashToDelete is null)
+            throw new ArgumentNullException($"Invalid BashId");
+        
+        _dbContext.Bashes.Remove(bashToDelete);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public Task UpdateBashAsync(Guid id, UpdateBashDto command)
-    {
-        throw new NotImplementedException();
-    }
 }

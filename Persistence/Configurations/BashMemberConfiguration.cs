@@ -4,29 +4,26 @@ using bach_bash.Models;
 
 namespace bach_bash.Persistence.Configurations;
 
-public class SubmissionConfiguration : IEntityTypeConfiguration<Submission>
+public class BashMemberConfiguration : IEntityTypeConfiguration<BashMember>
 {
-    public void Configure(EntityTypeBuilder<Submission> builder)
+    public void Configure(EntityTypeBuilder<BashMember> builder)
     {
         //table name
-        builder.ToTable("Submissions");
+        builder.ToTable("BashMembers");
 
         //primary key
         builder.HasKey(b => b.Id);
-
+        
         //properties
-        builder.Property(s => s.Place)
+        //foreign key
+        builder.HasOne(b => b.Bash)
+            .WithMany(m => m.BashMmebers)
+            .HasForeignKey(b => b.BashId)
             .IsRequired();
-        
-        //foreign keys
-        builder.HasOne(c => c.Challenge)
-            .WithMany(s => s.Submissions)
-            .HasForeignKey(c => c.ChallengeId)
-            .IsRequired();
-        
-        builder.HasOne(c => c.Basher)
-            .WithMany(s => s.Submissions)
-            .HasForeignKey(c => c.BasherId)
+        //foreign key
+        builder.HasOne(b => b.Bash)
+            .WithMany(m => m.BashMmebers)
+            .HasForeignKey(m => m.BasherId)
             .IsRequired();
 
         //immutable properties
@@ -38,6 +35,6 @@ public class SubmissionConfiguration : IEntityTypeConfiguration<Submission>
             .ValueGeneratedOnUpdate();
 
         //query performance boost
-        builder.HasIndex(b => b.Id);
+        builder.HasIndex(b => b.BashId);
     }
 }

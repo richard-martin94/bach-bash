@@ -9,6 +9,7 @@ public class BashDbContext(DbContextOptions<BashDbContext> options) : DbContext(
     public DbSet<Basher> Bashers => Set<Basher>();
     public DbSet<Challenge> Challenges => Set<Challenge>();
     public DbSet<Submission> Submissions => Set<Submission>();
+    public DbSet<BashMember> BashMembers => Set<BashMember>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
