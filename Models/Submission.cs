@@ -6,7 +6,7 @@ public class Submission: EntityBase
     public Basher Basher { get; private set; }
     public Guid ChallengeId { get; private set; }
     public Guid BasherId { get; private set; }
-    public int Place { get; private set; }
+    public short Place { get; private set; }
 
     private Submission()
     {
@@ -15,21 +15,21 @@ public class Submission: EntityBase
         Place = 0;
     }
 
-    private Submission(Guid challengeId, Guid basherId, int place)
+    private Submission(Guid challengeId, Guid basherId, short place)
     {
         ChallengeId = challengeId;
         BasherId = basherId;
         Place = place;
     }
 
-    public static Submission CreateSubmission(Guid challengeId, Guid basherId, int place)
+    public static Submission CreateSubmission(Guid challengeId, Guid basherId, short place)
     {
         ValidateInputs(challengeId, basherId, place);
         
         return new Submission(challengeId, basherId, place);
     }
     
-    public void UpdateSubmission(Guid challengeId, Guid basherId, int place)
+    public void UpdateSubmission(Guid challengeId, Guid basherId, short place)
     {
         ValidateInputs(challengeId, basherId, place);
         
@@ -40,7 +40,7 @@ public class Submission: EntityBase
         UpdateLastModified();
     }
     
-    private static void ValidateInputs(Guid challengeId, Guid basherId, int place)
+    private static void ValidateInputs(Guid challengeId, Guid basherId, short place)
     {
         //check if submission belongs to this challenge by id?
         

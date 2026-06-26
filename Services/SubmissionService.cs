@@ -18,32 +18,115 @@ public class SubmissionService : ISubmissionService
     
     public async Task<SubmissionDto> CreateSubmissionAsync(CreateSubmissionDto command)
     {
-        throw new NotImplementedException();
+        var submission = Submission.CreateSubmission(command.ChallengeId, command.BasherId, command.Place);
+        
+        await _dbContext.Submissions.AddAsync(submission);
+        await _dbContext.SaveChangesAsync();
+
+        return new SubmissionDto
+            (
+                submission.ChallengeId,
+                submission.BasherId,
+                submission.Place
+            );
     }
 
     public async Task<SubmissionDto?> GetSubmissionByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var submission = await _dbContext.Submissions
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == id);
+        if (submission == null)
+            throw new ArgumentNullException($"submission not found");
+        return new SubmissionDto
+        (
+            submission.ChallengeId,
+            submission.BasherId,
+            submission.Place
+        );
     }
 
-    public async Task<SubmissionDto?> GetSubmissionsByBashAsync(Guid bashId)
+    public async Task<SubmissionDto?> GetSubmissionByChallengeForMemberAsync(Guid challengeId, Guid basherId)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<SubmissionDto?> GetSubmissionByChallengeAsync(Guid challengeId)
-    {
-        throw new NotImplementedException();
+        var submission = await _dbContext.Submissions
+            .Where(s => (s.ChallengeId == challengeId) && (s.BasherId == basherId))
+            .FirstOrDefaultAsync();
+        if (submission == null)
+            throw new ArgumentNullException($"submission not found for basher or challenge");
+        return new SubmissionDto
+        (
+            submission.ChallengeId,
+            submission.BasherId,
+            submission.Place
+        );
     }
 
     public async Task<IEnumerable<SubmissionDto>> GetAllSubmissionsByChallengeAsync(Guid challengeId)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Submissions 
+            .AsNoTracking()
+            .Select(submission => new SubmissionDto
+                (
+                    submission.ChallengeId, 
+                    submission.BasherId, 
+                    submission.Place
+                ))
+            .Where(c => c.ChallengeId == challengeId)
+            .OrderBy(s => s.Place)
+            .ToListAsync();
     }
 
+    public async Task<IEnumerable<SubmissionDto>> GetAllSubmissionsByMemberAsync(Guid basherId)
+    {
+        return await _dbContext.Submissions 
+        .AsNoTracking()
+        .Select(submission => new SubmissionDto
+        (
+            submission.ChallengeId, 
+            submission.BasherId, 
+            submission.Place
+        ))
+        .Where(b => b.BasherId == basherId)
+        .ToListAsync();
+    }
+    
     public async Task UpdateSubmissionAsync(Guid id, UpdateSubmissionDto command)
     {
-        throw new NotImplementedException();
+        var submissionToUpdate = await _dbContext.Submissions.FindAsync(id);
+
+        if (submissionToUpdate == null)
+            throw new ArgumentNullException($"Submission not found");
+        
+        submissionToUpdate.UpdateSubmission(command.ChallengeId, command.BasherId, command.Place);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateAllSubmissionsByChallengeAsync(Guid challengeId, List<UpdateSubmissionDto> dtos)
+    {
+        var submissions = await _dbContext.Submissions
+            .Where(s => s.ChallengeId == challengeId)
+            .OrderBy(s => s.Place)
+            .ToListAsync();
+
+        if (submissions == null)
+            throw new ArgumentNullException($"Challenge has no submissions");
+
+        
+        var i = 0;
+        foreach (var submission in submissions)
+        {
+            if (dtos[i].BasherId != Guid.Empty)
+            {
+                submission.UpdateSubmission(dtos[i].ChallengeId, dtos[i].BasherId, dtos[i].Place);
+                ++i;   
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteSubmissionAsync(Guid id)

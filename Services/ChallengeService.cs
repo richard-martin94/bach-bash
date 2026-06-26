@@ -50,7 +50,6 @@ public class ChallengeService : IChallengeService
             challenge.BashId
         );
         
-        throw new NotImplementedException();
     }
 
     public async Task<IEnumerable<ChallengeDto>> GetAllChallengesByBashAsync(Guid bashId)
@@ -78,7 +77,7 @@ public class ChallengeService : IChallengeService
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task UpdateAllChallengesByBashAsync(Guid bashId, IEnumerable<UpdateChallengeDto> dto)
+    public async Task UpdateAllChallengesByBashAsync(Guid bashId, List<UpdateChallengeDto> dtos)
     {
         var challenges = await _dbContext.Challenges
             .Where(c => c.BashId == bashId)
