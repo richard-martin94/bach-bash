@@ -5,7 +5,7 @@ public sealed class Bash : EntityBase
     public String Title { get; private set; }
     public Guid OwnerId { get; private set; }
     
-    public Basher Owner { get; private set; }
+    public Basher? Owner { get; private set; }
     
     public ICollection<Challenge> Challenges { get; private set; }
     

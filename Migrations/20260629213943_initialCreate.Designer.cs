@@ -12,8 +12,8 @@ using bach_bash.Persistence;
 namespace bach_bash.Migrations
 {
     [DbContext(typeof(BashDbContext))]
-    [Migration("20260624151740_ModificationToCreate")]
-    partial class ModificationToCreate
+    [Migration("20260629213943_initialCreate")]
+    partial class initialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,7 +52,43 @@ namespace bach_bash.Migrations
 
                     b.HasIndex("Id");
 
+                    b.HasIndex("OwnerId");
+
                     b.ToTable("Bashes", "app");
+                });
+
+            modelBuilder.Entity("bach_bash.Models.BashMember", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BashId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BasherId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BasherId1")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .ValueGeneratedOnUpdate()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BashId");
+
+                    b.HasIndex("BasherId");
+
+                    b.HasIndex("BasherId1");
+
+                    b.ToTable("BashMembers", "app");
                 });
 
             modelBuilder.Entity("bach_bash.Models.Basher", b =>
@@ -138,6 +174,9 @@ namespace bach_bash.Migrations
                         .ValueGeneratedOnUpdate()
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<short>("Place")
+                        .HasColumnType("smallint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BasherId");
@@ -147,6 +186,36 @@ namespace bach_bash.Migrations
                     b.HasIndex("Id");
 
                     b.ToTable("Submissions", "app");
+                });
+
+            modelBuilder.Entity("bach_bash.Models.Bash", b =>
+                {
+                    b.HasOne("bach_bash.Models.Basher", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("bach_bash.Models.BashMember", b =>
+                {
+                    b.HasOne("bach_bash.Models.Bash", "Bash")
+                        .WithMany("BashMmebers")
+                        .HasForeignKey("BasherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("bach_bash.Models.Basher", "Basher")
+                        .WithMany()
+                        .HasForeignKey("BasherId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bash");
+
+                    b.Navigation("Basher");
                 });
 
             modelBuilder.Entity("bach_bash.Models.Challenge", b =>
@@ -181,6 +250,8 @@ namespace bach_bash.Migrations
 
             modelBuilder.Entity("bach_bash.Models.Bash", b =>
                 {
+                    b.Navigation("BashMmebers");
+
                     b.Navigation("Challenges");
                 });
 

@@ -74,12 +74,12 @@ public class BasherService : IBasherService
     public async Task DeleteBasherAsync(Guid id)
     {
         var basherToDelete = await _dbContext.Bashers.FindAsync(id);
-        
-        if(basherToDelete is null)
-            throw new ArgumentNullException($"Invalid basher id or basher id not found");
-        
-        _dbContext.Bashers.Remove(basherToDelete);
-        await _dbContext.SaveChangesAsync();
+
+        if (basherToDelete != null)
+        {
+            _dbContext.Bashers.Remove(basherToDelete);
+            await _dbContext.SaveChangesAsync();   
+        }
     }
     
 }

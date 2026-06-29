@@ -6,7 +6,7 @@ namespace bach_bash.Services;
 public interface IBashMemberService
 {
     Task<BashMemberDto> CreateBashMemberAsync(CreateBashMemberDto dto);
-    Task<IEnumerable<BashMemberDto?>> GetBashMembersByIdAsync(Guid id);
+    Task<IEnumerable<BashMemberDto?>> GetBashesByMemberIdAsync(Guid id);
     Task<IEnumerable<BashMemberDto>> GetAllBashMembersByBashAsync(Guid bashId);
     //delete all members from bash
     Task DeleteAllBashMembersByBashAsync(Guid bashId);

@@ -1,6 +1,8 @@
+using bach_bash.Endpoints;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using bach_bash.Persistence;
+using bach_bash.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<BashDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddTransient<IBashService, BashService>();
+builder.Services.AddTransient<IBasherService, BasherService>();
+builder.Services.AddTransient<IBashMemberService, BashMemberService>();
+builder.Services.AddTransient<IChallengeService, ChallengeService>();
+builder.Services.AddTransient<ISubmissionService, SubmissionService>();
+
+/*builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy => policy
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});*/
 
 var app = builder.Build();
 
@@ -25,32 +41,16 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+//app.UseCors("AllowAngularApp");
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.MapBashEndPoints();
+app.MapBasherEndPoints();
+app.MapBashMemberEndPoints();
+app.MapChallengeEndpoints();
+app.MapSubmissionEndpoints();
 
 app.MapGet("/", () => "The negotiator").Produces(200, typeof(String));
 
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast");
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

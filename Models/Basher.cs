@@ -4,6 +4,12 @@ public class Basher : EntityBase
 {
     public String Username { get; private set; }
     
+    // Foreign key pointing to bash
+    public Guid OwnerId { get; set; }
+
+    // Navigation back to bash
+    public Bash Bash { get; set; } = null!;
+    
     public ICollection<Submission> Submissions { get; private set; } 
 
     private Basher()

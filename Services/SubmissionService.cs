@@ -63,7 +63,7 @@ public class SubmissionService : ISubmissionService
 
     public async Task<IEnumerable<SubmissionDto>> GetAllSubmissionsByChallengeAsync(Guid challengeId)
     {
-        return await _dbContext.Submissions 
+        var submissions =  await _dbContext.Submissions 
             .AsNoTracking()
             .Select(submission => new SubmissionDto
                 (
@@ -74,6 +74,7 @@ public class SubmissionService : ISubmissionService
             .Where(c => c.ChallengeId == challengeId)
             .OrderBy(s => s.Place)
             .ToListAsync();
+        return submissions;
     }
 
     public async Task<IEnumerable<SubmissionDto>> GetAllSubmissionsByMemberAsync(Guid basherId)
@@ -110,12 +111,11 @@ public class SubmissionService : ISubmissionService
 
         if (submissions == null)
             throw new ArgumentNullException($"Challenge has no submissions");
-
         
         var i = 0;
         foreach (var submission in submissions)
         {
-            if (dtos[i].BasherId != Guid.Empty)
+            if (dtos[i].BasherId != Guid.Empty && dtos[i].Place == i)
             {
                 submission.UpdateSubmission(dtos[i].ChallengeId, dtos[i].BasherId, dtos[i].Place);
                 ++i;   
@@ -131,6 +131,12 @@ public class SubmissionService : ISubmissionService
 
     public async Task DeleteSubmissionAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var submissionToDelete = await _dbContext.Submissions.FindAsync(id);
+
+        if (submissionToDelete != null)
+        {
+            _dbContext.Submissions.Remove(submissionToDelete);
+            await _dbContext.SaveChangesAsync();
+        } 
     }
 }

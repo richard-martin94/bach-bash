@@ -31,7 +31,7 @@ public class BashMemberService : IBashMemberService
     }
 
     //all bashes this member participates in
-    public async Task<IEnumerable<BashMemberDto?>> GetBashMembersByIdAsync(Guid id)
+    public async Task<IEnumerable<BashMemberDto?>> GetBashesByMemberIdAsync(Guid id)
     {
         return await _dbContext.BashMembers
             .Select(bashmember => new BashMemberDto(bashmember.Id, bashmember.BashId))
@@ -85,16 +85,15 @@ public class BashMemberService : IBashMemberService
     //delete basher from one bash
     public async Task DeleteBashMemberFromOneBashAsync(Guid id, Guid bashId)
     {
-        var bash = await _dbContext.BashMembers
+        var bashMember = await _dbContext.BashMembers
             .Where(bm =>(bm.BashId == bashId) && (bm.BasherId == id))
             .FirstOrDefaultAsync();
 
-        if (bash is null)
-            throw new ArgumentNullException($"bash not found or basher does not exist");
-
-        _dbContext.BashMembers.Remove(bash);
-        
-        await _dbContext.SaveChangesAsync();
+        if (bashMember != null)
+        {
+            _dbContext.BashMembers.Remove(bashMember);
+            await _dbContext.SaveChangesAsync();   
+        }
     }
     
 }

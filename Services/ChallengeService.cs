@@ -98,28 +98,26 @@ public class ChallengeService : IChallengeService
     {
         var challengeToDelete = await _dbContext.Challenges.FindAsync(id);
 
-        if (challengeToDelete == null)
-            throw new ArgumentNullException($"Challenge not found");
-        
-        _dbContext.Challenges.Remove(challengeToDelete);
-        await _dbContext.SaveChangesAsync();
+        if (challengeToDelete != null)
+        {
+            _dbContext.Challenges.Remove(challengeToDelete);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 
     public async Task DeleteAllChallengesByBashAsync(Guid bashId)
     {
-        
         var challenges = await _dbContext.Challenges
             .Where(c => c.BashId == bashId)
             .ToListAsync();
 
-        if (challenges == null)
-            throw new ArgumentNullException($"Bash has no challenges");
-
-        foreach (var challenge in challenges)
+        if (challenges != null)
         {
-            _dbContext.Challenges.Remove(challenge);
+            foreach (var challenge in challenges)
+            {
+                _dbContext.Challenges.Remove(challenge);
+            }
+            await _dbContext.SaveChangesAsync();
         }
-
-        await _dbContext.SaveChangesAsync();
     }
 }

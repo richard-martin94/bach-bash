@@ -18,8 +18,12 @@ public class BashConfiguration : IEntityTypeConfiguration<Bash>
         builder.Property(b => b.Title)
             .IsRequired()
             .HasMaxLength(200);
-        builder.Property(b => b.OwnerId)
-            .IsRequired();
+        
+        //foreign key
+        builder.HasOne(b => b.Owner)
+            .WithOne(b => b.Bash)
+            .HasForeignKey<Basher>(b => b.Id)
+            .OnDelete(DeleteBehavior.Cascade);
         
         //immutable properties
         builder.Property(b => b.Created)

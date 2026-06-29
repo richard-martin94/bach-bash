@@ -86,11 +86,12 @@ public class BashService : IBashService
     public async Task DeleteBashAsync(Guid id)
     {
         var bashToDelete = await _dbContext.Bashes.FindAsync(id);
-        if (bashToDelete is null)
-            throw new ArgumentNullException($"Invalid BashId");
         
-        _dbContext.Bashes.Remove(bashToDelete);
-        await _dbContext.SaveChangesAsync();
+        if (bashToDelete != null)
+        {
+            _dbContext.Bashes.Remove(bashToDelete);
+            await _dbContext.SaveChangesAsync();   
+        }
     }
 
 }
